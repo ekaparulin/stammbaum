@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/">
+        <file>pages/main.qml</file>
+        <file>pages/Page1.qml</file>
+        <file>pages/Page1Form.ui.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>images/back.png</file>
+        <file>images/drawer.png</file>
+        <file>images/menu.png</file>
+        <file>pages/TumblerPage.qml</file>
+        <file>pages/ScrollablePage.qml</file>
+        <file>images/arrow.png</file>
+        <file>pages/MugShot.qml</file>
+        <file>images/persons/female/mature_0.png</file>
+        <file>images/persons/male/mature_0.png</file>
+        <file>images/persons/unknown.png</file>
+        <file>images/persons/female/adult_0.png</file>
+        <file>images/persons/female/child_0.png</file>
+        <file>images/persons/male/adult_0.png</file>
+        <file>images/persons/male/adult_1.png</file>
+        <file>images/persons/male/child_0.png</file>
+        <file>images/persons/female/adult_1.png</file>
+    </qresource>
+</RCC>
