@@ -25,22 +25,30 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 QMAKE_CXXFLAGS += -Werror -Wall -Wextra -pedantic -std=c++11
 
+INCLUDEPATH += $$PWD/src
+
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-        db/dbmanager.cpp \
-        person/person.cpp \
-        editperson.cpp
+        src/main.cpp \
+        src/mainwindow.cpp \
+        src/db/dbmanager.cpp \
+        src/person/person.cpp \
+        src/editperson.cpp
 
 HEADERS += \
-        mainwindow.h \
-        db/dbmanager.h \
-        person/person.h \
-        editperson.h
+        src/mainwindow.h \
+        src/db/dbmanager.h \
+        src/person/person.h \
+        src/editperson.h
 
 FORMS += \
-        mainwindow.ui \
-        editperson.ui
+        src/mainwindow.ui \
+        src/editperson.ui
 
 SUBDIRS += \
         stammbaum.pro
+
+DISTFILES += \
+    README.md
+
+RESOURCES += \
+    res/stammbaum.qrc

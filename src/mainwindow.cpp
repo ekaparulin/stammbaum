@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
+    setWindowIcon(QIcon(":/icons/tree.png"));
+
     QAction *addPerson = new QAction(tr("&Add"), this);
     connect(addPerson, SIGNAL(triggered(bool)), &m_editPersonDlg, SLOT(add(bool)));
     ui->toolBar->addAction(addPerson);

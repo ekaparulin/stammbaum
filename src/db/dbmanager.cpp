@@ -6,7 +6,7 @@
 #include <QDir>
 #include <QStandardPaths>
 
-#include <person/person.h>
+#include "person/person.h"
 
 namespace db {
 
