@@ -29,20 +29,35 @@ INCLUDEPATH += $$PWD/src
 
 SOURCES += \
         src/main.cpp \
-        src/mainwindow.cpp \
+        src/ui/mainwindow.cpp \
         src/db/dbmanager.cpp \
-        src/person/person.cpp \
-        src/editperson.cpp
+        src/people/person.cpp \
+        src/people/event.cpp \
+        src/ui/editdialog.cpp \
+        src/ui/editperson.cpp \
+        src/ui/eventform.cpp \
+        src/people/base.cpp \
+    src/ui/eventwidget.cpp \
+    src/ui/editevent.cpp
 
 HEADERS += \
-        src/mainwindow.h \
+        src/ui/mainwindow.h \
         src/db/dbmanager.h \
-        src/person/person.h \
-        src/editperson.h
+        src/people/person.h \
+        src/people/event.h \
+        src/ui/editdialog.h \
+        src/ui/editperson.h \
+        src/ui/eventform.h \
+        src/people/base.h \
+    src/ui/eventwidget.h \
+    src/ui/editevent.h
 
 FORMS += \
-        src/mainwindow.ui \
-        src/editperson.ui
+        src/ui/mainwindow.ui \
+        src/ui/editperson.ui \
+        src/ui/eventform.ui \
+    src/ui/eventwidget.ui \
+    src/ui/editevent.ui
 
 SUBDIRS += \
         stammbaum.pro

@@ -6,7 +6,7 @@
 #include <QDir>
 #include <QStandardPaths>
 
-#include "person/person.h"
+#include "people/person.h"
 
 namespace db {
 
@@ -45,7 +45,7 @@ Manager::Manager(const QString& path) {
 
 }
 
-bool Manager::addPerson(const person::Person &p) {
+bool Manager::addPerson(const people::Person *p) {
     bool success = false;
     QSqlQuery query;
     query.prepare(R"(
@@ -66,13 +66,13 @@ bool Manager::addPerson(const person::Person &p) {
                           :FATHER_ID,
                           :MOTHER_ID
                       ))");
-    query.bindValue(":FAMILY_NAME", p.lastName());
-    query.bindValue(":FIRST_NAME",  p.firstName());
-    query.bindValue(":BIRTH_DATE",  p.birthDate().toString(DATE_FORMAT));
-    query.bindValue(":DEATH_DATE",  p.deathDate().toString(DATE_FORMAT));
-    query.bindValue(":ALIVE",       p.alive());
-    query.bindValue(":FATHER_ID",   p.fatherId());
-    query.bindValue(":MOTHER_ID",   p.motherId());
+    query.bindValue(":FAMILY_NAME", p->lastName());
+    query.bindValue(":FIRST_NAME",  p->firstName());
+    query.bindValue(":BIRTH_DATE",  p->birthDate().toString(DATE_FORMAT));
+    query.bindValue(":DEATH_DATE",  p->deathDate().toString(DATE_FORMAT));
+    query.bindValue(":ALIVE",       p->alive());
+    query.bindValue(":FATHER_ID",   p->fatherId());
+    query.bindValue(":MOTHER_ID",   p->motherId());
 
     if(query.exec()) {
         success = true;
@@ -84,7 +84,7 @@ bool Manager::addPerson(const person::Person &p) {
     return success;
 }
 
-bool Manager::updatePerson(const person::Person &p) {
+bool Manager::updatePerson(const people::Person *p) {
     bool success = false;
     QSqlQuery query;
     query.prepare(R"(
@@ -98,14 +98,14 @@ bool Manager::updatePerson(const person::Person &p) {
                           MOTHER_ID = :MOTHER_ID
                       WHERE ID = :ID
                       )");
-    query.bindValue(":ID", p.id());
-    query.bindValue(":FAMILY_NAME", p.lastName());
-    query.bindValue(":FIRST_NAME",  p.firstName());
-    query.bindValue(":BIRTH_DATE",  p.birthDate().toString(DATE_FORMAT));
-    query.bindValue(":DEATH_DATE",  p.deathDate().toString(DATE_FORMAT));
-    query.bindValue(":ALIVE",       p.alive());
-    query.bindValue(":FATHER_ID",   p.fatherId());
-    query.bindValue(":MOTHER_ID",   p.motherId());
+    query.bindValue(":ID", p->id());
+    query.bindValue(":FAMILY_NAME", p->lastName());
+    query.bindValue(":FIRST_NAME",  p->firstName());
+    query.bindValue(":BIRTH_DATE",  p->birthDate().toString(DATE_FORMAT));
+    query.bindValue(":DEATH_DATE",  p->deathDate().toString(DATE_FORMAT));
+    query.bindValue(":ALIVE",       p->alive());
+    query.bindValue(":FATHER_ID",   p->fatherId());
+    query.bindValue(":MOTHER_ID",   p->motherId());
 
     if(query.exec()) {
         success = true;
@@ -124,14 +124,14 @@ bool Manager::deletePerson(const int &id) {
     return query.exec();
 }
 
-person::Person Manager::person(const int &id) {
+std::shared_ptr<people::Person> Manager::person(const int &id) {
     QSqlQuery query("SELECT * FROM people WHERE ID = " + QString::number(id));
     if(!query.exec()) {
         qDebug() << __FUNCTION__ << " error:  " << query.lastError();
     }
 
-    person::Person p;
-    p.setId(id);
+    auto p = std::make_shared<people::Person>();
+    p->setId(id);
     auto lastNameIdx = query.record().indexOf("FAMILY_NAME");
     auto firstNameIdx = query.record().indexOf("FIRST_NAME");
     auto birthNameIdx = query.record().indexOf("BIRTH_DATE");
@@ -141,15 +141,15 @@ person::Person Manager::person(const int &id) {
     auto motherIdIdx = query.record().indexOf("MOTHER_ID");
 
     while (query.next()) {
-        p.setLastName(query.value(lastNameIdx).toString());
-        p.setFirstName(query.value(firstNameIdx).toString());
-        p.setBirthDate(QDateTime::fromString(query.value(birthNameIdx).toString(), DATE_FORMAT));
-        p.setAlive(query.value(aliveIdx).toBool());
-        if(!p.alive()) {
-            p.setDeathDate(QDateTime::fromString(query.value(deathDateIdx).toString(), DATE_FORMAT));
+        p->setLastName(query.value(lastNameIdx).toString());
+        p->setFirstName(query.value(firstNameIdx).toString());
+        p->setBirthDate(QDateTime::fromString(query.value(birthNameIdx).toString(), DATE_FORMAT));
+        p->setAlive(query.value(aliveIdx).toBool());
+        if(!p->alive()) {
+            p->setDeathDate(QDateTime::fromString(query.value(deathDateIdx).toString(), DATE_FORMAT));
         }
-        p.setFatherId(query.value(fatherIdIdx).toInt());
-        p.setMotherId(query.value(motherIdIdx).toInt());
+        p->setFatherId(query.value(fatherIdIdx).toInt());
+        p->setMotherId(query.value(motherIdIdx).toInt());
     }
 
     return p;

@@ -1,8 +1,9 @@
 #include "editperson.h"
+#include "eventform.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "db/dbmanager.h"
-
+#include "people/person.h"
 #include <QSqlQueryModel>
 #include <QDebug>
 
@@ -29,13 +30,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->personList->horizontalHeader()->setStretchLastSection(true);
 
     ui->personList->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->personList, SIGNAL(customContextMenuRequested(QPoint)),
-            this, SLOT(personMenu(QPoint)));
+    connect(ui->personList, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(personMenu(QPoint)));
 
 
-    connect(&m_editPersonDlg, SIGNAL(save(const person::Person&)), this, SLOT(savePerson(const person::Person&)));
+    connect(&m_editPersonDlg, SIGNAL(save(const people::Base*)), this, SLOT(savePerson(const people::Base*)));
 
     connect(ui->personList, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(personListClicked(const QModelIndex &)));
+
+    this->lower();
+    EventForm* m_eventForm = new EventForm(this);
+    m_eventForm->show();
+    m_eventForm->activateWindow();
+    m_eventForm->raise();
+
 }
 
 MainWindow::~MainWindow() {
@@ -51,10 +58,12 @@ void MainWindow::loadModel() {
 
 }
 
-void MainWindow::savePerson(const person::Person &p) {
+void MainWindow::savePerson(const people::Base* b) {
     qDebug() << __FUNCTION__;
 
-    if(p.id() == 0) {
+    auto p = reinterpret_cast<const people::Person*>(b);
+
+    if(p->id() == 0) {
         m_dbmPtr->addPerson(p);
     } else {
         m_dbmPtr->updatePerson(p);
@@ -68,7 +77,9 @@ void MainWindow::personListClicked(const QModelIndex &index) {
     }
 
     qDebug() << index.row() << m_model.data(m_model.index(index.row(), 0));
-    m_editPersonDlg.edit(m_dbmPtr->person( m_model.data(m_model.index(index.row(), 0)).toInt()));
+    m_editPersonDlg.edit(
+        reinterpret_cast<const people::Base *>(
+            m_dbmPtr->person(m_model.data(m_model.index(index.row(), 0)).toInt()).get()));
 }
 
 QActionGroup * MainWindow::personMenuItem(QMenu *menu, QModelIndex index,  const QString& label) {
@@ -96,7 +107,10 @@ void MainWindow::personMenu(QPoint pos) {
 }
 
 void MainWindow::editPerson(QAction *action) {
-    m_editPersonDlg.edit(m_dbmPtr->person(action->data().toInt()));
+    m_editPersonDlg.edit(
+        reinterpret_cast<const people::Base *>(
+            m_dbmPtr->person(action->data().toInt()).get())
+    );
 }
 
 void MainWindow::deletePerson(QAction* action) {

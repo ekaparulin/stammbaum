@@ -1,6 +1,6 @@
 #include "person.h"
 
-namespace person {
+namespace people {
 Person::Person() {
 
 }
@@ -25,19 +25,19 @@ void Person::setLastName(const QString &lastName) {
 }
 
 QDateTime Person::birthDate() const {
-    return m_birthDate;
+    return m_birth.date();
 }
 
 void Person::setBirthDate(const QDateTime &birthDate) {
-    m_birthDate = birthDate;
+    m_birth.setDate(birthDate);
 }
 
 QDateTime Person::deathDate() const {
-    return m_deathDate;
+    return m_death.date();
 }
 
 void Person::setDeathDate(const QDateTime &deathDate) {
-    m_deathDate = deathDate;
+    m_death.setDate(deathDate);
 }
 
 bool Person::alive() const {
@@ -71,4 +71,4 @@ int Person::id() const {
 void Person::setId(int id) {
     m_id = id;
 }
-} /* namespace person */
+} /* namespace people */

@@ -5,7 +5,7 @@
 #include <QString>
 #include <QDebug>
 
-namespace person {
+namespace people {
 class Person;
 }
 
@@ -17,10 +17,10 @@ public:
 
     Manager(const QString&);
 
-    bool addPerson(const person::Person&);
-    bool updatePerson(const person::Person&);
+    bool addPerson(const people::Person*);
+    bool updatePerson(const people::Person*);
     bool deletePerson(const int&);
-    person::Person person(const int&);
+    std::shared_ptr<people::Person> person(const int&);
     bool personExists(const QString&);
     bool deleteAll();
     void getAllPersons();

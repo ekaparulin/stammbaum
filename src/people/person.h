@@ -1,12 +1,14 @@
-#ifndef PERSON_PERSON_H
-#define PERSON_PERSON_H
+#ifndef PEOPLE_PERSON_H
+#define PEOPLE_PERSON_H
+
+#include "base.h"
+#include "event.h"
 
 #include <QDateTime>
 
+namespace people {
 
-namespace person {
-
-class Person {
+class Person: public Base {
 public:
     Person();
     ~Person();
@@ -39,12 +41,12 @@ private:
     int         m_id {0};
     QString     m_firstName;
     QString     m_lastName;
-    QDateTime   m_birthDate;
-    QDateTime   m_deathDate;
+    Event       m_birth;
+    Event       m_death;
     bool        m_alive;
     int         m_fatherId {0};
     int         m_motherId {0};
 };
 
 }
-#endif // PERSON_PERSON_H
+#endif // PEOPLE_PERSON_H

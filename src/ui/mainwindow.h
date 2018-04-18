@@ -8,6 +8,9 @@
 #include <QMainWindow>
 #include <QSqlQueryModel>
 
+namespace people {
+class Base;
+}
 namespace Ui {
 class MainWindow;
 }
@@ -21,11 +24,11 @@ public:
     ~MainWindow();
 
 private slots:
-    void savePerson(const person::Person&);
+    void savePerson(const people::Base *);
     void personListClicked(const QModelIndex &);
     void personMenu(QPoint);
-    void editPerson(QAction*);
-    void deletePerson(QAction*);
+    void editPerson(QAction *);
+    void deletePerson(QAction *);
 
 private:
     void loadModel();
