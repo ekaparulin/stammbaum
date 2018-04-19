@@ -1,7 +1,14 @@
 #include "event.h"
 
 namespace people {
+
 Event::Event() {
+
+}
+
+Event::Event(Event::Type t, const QDateTime& d):
+    m_type(t),
+    m_date(d) {
 
 }
 

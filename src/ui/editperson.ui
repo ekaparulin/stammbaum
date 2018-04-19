@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>690</width>
-    <height>413</height>
+    <width>583</width>
+    <height>438</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,59 +26,56 @@
    </item>
    <item row="2" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="1">
-      <widget class="QGroupBox" name="groupBox_2">
-       <property name="title">
-        <string>Dates</string>
+     <property name="leftMargin">
+      <number>12</number>
+     </property>
+     <property name="topMargin">
+      <number>12</number>
+     </property>
+     <property name="rightMargin">
+      <number>12</number>
+     </property>
+     <property name="bottomMargin">
+      <number>12</number>
+     </property>
+     <item row="1" column="0">
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <layout class="QGridLayout" name="gridLayout_4">
-        <item row="0" column="1">
-         <widget class="QCheckBox" name="isDead">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Dead</string>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QCalendarWidget" name="birthDate"/>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Birth</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QCalendarWidget" name="deathDate">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="dateEditEnabled">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QTimeEdit" name="birthTime"/>
-        </item>
-        <item row="1" column="1">
-         <widget class="QTimeEdit" name="deathTime">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="eventsTab">
+        <attribute name="title">
+         <string>Events</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="eventsTabLayout">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_2">
+        <attribute name="title">
+         <string>Tab 2</string>
+        </attribute>
+       </widget>
       </widget>
      </item>
-     <item row="0" column="1">
+     <item row="0" column="0">
       <widget class="QGroupBox" name="groupBox_5">
        <property name="title">
         <string>Names</string>
@@ -117,11 +114,6 @@
  <tabstops>
   <tabstop>firstName</tabstop>
   <tabstop>familyName</tabstop>
-  <tabstop>birthTime</tabstop>
-  <tabstop>birthDate</tabstop>
-  <tabstop>isDead</tabstop>
-  <tabstop>deathTime</tabstop>
-  <tabstop>deathDate</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -154,38 +146,6 @@
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>isDead</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>deathDate</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>394</x>
-     <y>163</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>423</x>
-     <y>344</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>isDead</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>deathTime</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>384</x>
-     <y>150</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>384</x>
-     <y>183</y>
     </hint>
    </hints>
   </connection>

@@ -24,22 +24,6 @@ void Person::setLastName(const QString &lastName) {
     m_lastName = lastName;
 }
 
-QDateTime Person::birthDate() const {
-    return m_birth.date();
-}
-
-void Person::setBirthDate(const QDateTime &birthDate) {
-    m_birth.setDate(birthDate);
-}
-
-QDateTime Person::deathDate() const {
-    return m_death.date();
-}
-
-void Person::setDeathDate(const QDateTime &deathDate) {
-    m_death.setDate(deathDate);
-}
-
 bool Person::alive() const {
     return m_alive;
 }
@@ -71,4 +55,27 @@ int Person::id() const {
 void Person::setId(int id) {
     m_id = id;
 }
+
+QList<Event> Person::events() const {
+    return m_events;
+}
+
+void Person::setEvents(const QList<Event> &events) {
+    m_events = events;
+}
+
+const Event &Person::event(Event::Type t) const {
+    for(const Event& evt: m_events) {
+        if(evt.type() == t) {
+            return evt;
+        }
+    }
+    throw std::exception();
+}
+
+void Person::addEvent(const Event &e) {
+    m_events.append(e);
+}
+
+
 } /* namespace people */

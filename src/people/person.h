@@ -19,12 +19,6 @@ public:
     QString lastName() const;
     void setLastName(const QString &lastName);
 
-    QDateTime birthDate() const;
-    void setBirthDate(const QDateTime &birthDate);
-
-    QDateTime deathDate() const;
-    void setDeathDate(const QDateTime &deathDate);
-
     bool alive() const;
     void setAlive(bool alive);
 
@@ -37,13 +31,18 @@ public:
     int id() const;
     void setId(int id);
 
+    QList<Event> events() const;
+    void setEvents(const QList<Event> &events);
+    const Event& event(Event::Type) const;
+    void addEvent(const Event&);
+
 private:
     int         m_id {0};
     QString     m_firstName;
     QString     m_lastName;
-    Event       m_birth;
-    Event       m_death;
-    bool        m_alive;
+    QList<Event> m_events;
+
+    bool        m_alive {true};
     int         m_fatherId {0};
     int         m_motherId {0};
 };

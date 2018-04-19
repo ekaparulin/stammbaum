@@ -35,7 +35,6 @@ SOURCES += \
         src/people/event.cpp \
         src/ui/editdialog.cpp \
         src/ui/editperson.cpp \
-        src/ui/eventform.cpp \
         src/people/base.cpp \
     src/ui/eventwidget.cpp \
     src/ui/editevent.cpp
@@ -47,7 +46,6 @@ HEADERS += \
         src/people/event.h \
         src/ui/editdialog.h \
         src/ui/editperson.h \
-        src/ui/eventform.h \
         src/people/base.h \
     src/ui/eventwidget.h \
     src/ui/editevent.h
@@ -55,7 +53,6 @@ HEADERS += \
 FORMS += \
         src/ui/mainwindow.ui \
         src/ui/editperson.ui \
-        src/ui/eventform.ui \
     src/ui/eventwidget.ui \
     src/ui/editevent.ui
 

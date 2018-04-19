@@ -68,8 +68,18 @@ bool Manager::addPerson(const people::Person *p) {
                       ))");
     query.bindValue(":FAMILY_NAME", p->lastName());
     query.bindValue(":FIRST_NAME",  p->firstName());
-    query.bindValue(":BIRTH_DATE",  p->birthDate().toString(DATE_FORMAT));
-    query.bindValue(":DEATH_DATE",  p->deathDate().toString(DATE_FORMAT));
+
+    try {
+        query.bindValue(":BIRTH_DATE",  p->event(people::Event::Type::Birth).date().toString(DATE_FORMAT));
+    } catch(std::exception e) {
+
+    }
+    try {
+        query.bindValue(":DEATH_DATE",  p->event(people::Event::Type::Death).date().toString(DATE_FORMAT));
+    } catch(std::exception e) {
+
+    }
+
     query.bindValue(":ALIVE",       p->alive());
     query.bindValue(":FATHER_ID",   p->fatherId());
     query.bindValue(":MOTHER_ID",   p->motherId());
@@ -87,6 +97,9 @@ bool Manager::addPerson(const people::Person *p) {
 bool Manager::updatePerson(const people::Person *p) {
     bool success = false;
     QSqlQuery query;
+
+    QString dates;
+
     query.prepare(R"(
                       UPDATE people SET
                           FAMILY_NAME = :FAMILY_NAME,
@@ -101,8 +114,16 @@ bool Manager::updatePerson(const people::Person *p) {
     query.bindValue(":ID", p->id());
     query.bindValue(":FAMILY_NAME", p->lastName());
     query.bindValue(":FIRST_NAME",  p->firstName());
-    query.bindValue(":BIRTH_DATE",  p->birthDate().toString(DATE_FORMAT));
-    query.bindValue(":DEATH_DATE",  p->deathDate().toString(DATE_FORMAT));
+    try {
+        query.bindValue(":BIRTH_DATE",  p->event(people::Event::Type::Birth).date().toString(DATE_FORMAT));
+    } catch(std::exception e) {
+
+    }
+    try {
+        query.bindValue(":DEATH_DATE",  p->event(people::Event::Type::Death).date().toString(DATE_FORMAT));
+    } catch(std::exception e) {
+
+    }
     query.bindValue(":ALIVE",       p->alive());
     query.bindValue(":FATHER_ID",   p->fatherId());
     query.bindValue(":MOTHER_ID",   p->motherId());
@@ -143,11 +164,19 @@ std::shared_ptr<people::Person> Manager::person(const int &id) {
     while (query.next()) {
         p->setLastName(query.value(lastNameIdx).toString());
         p->setFirstName(query.value(firstNameIdx).toString());
-        p->setBirthDate(QDateTime::fromString(query.value(birthNameIdx).toString(), DATE_FORMAT));
-        p->setAlive(query.value(aliveIdx).toBool());
-        if(!p->alive()) {
-            p->setDeathDate(QDateTime::fromString(query.value(deathDateIdx).toString(), DATE_FORMAT));
+
+
+        if(!query.value(birthNameIdx).isNull()) {
+            p->addEvent(people::Event(people::Event::Type::Birth, QDateTime::fromString(query.value(birthNameIdx).toString(), DATE_FORMAT)));
         }
+        if(!query.value(deathDateIdx).isNull()) {
+            p->addEvent(people::Event(people::Event::Type::Death, QDateTime::fromString(query.value(deathDateIdx).toString(), DATE_FORMAT)));
+        }
+        qDebug() << __FUNCTION__ << " " << query.value(birthNameIdx).toString() << " " << query.value(birthNameIdx).isNull() ;
+        qDebug() << __FUNCTION__ << " " << query.value(deathDateIdx).toString();
+
+
+        p->setAlive(query.value(aliveIdx).toBool());
         p->setFatherId(query.value(fatherIdIdx).toInt());
         p->setMotherId(query.value(motherIdIdx).toInt());
     }

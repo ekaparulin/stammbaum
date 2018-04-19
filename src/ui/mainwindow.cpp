@@ -1,5 +1,4 @@
 #include "editperson.h"
-#include "eventform.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "db/dbmanager.h"
@@ -38,10 +37,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->personList, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(personListClicked(const QModelIndex &)));
 
     this->lower();
-    EventForm* m_eventForm = new EventForm(this);
-    m_eventForm->show();
-    m_eventForm->activateWindow();
-    m_eventForm->raise();
 
 }
 

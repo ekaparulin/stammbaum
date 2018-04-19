@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>icons/tree.png</file>
+        <file>icons/event-new.png</file>
+        <file>icons/minus.png</file>
+        <file>icons/plus.png</file>
     </qresource>
 </RCC>

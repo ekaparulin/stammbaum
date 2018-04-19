@@ -7,12 +7,14 @@
 
 EditPerson::EditPerson(QWidget *parent) :
     EditDialog(parent),
-    ui(new Ui::EditPerson) {
+    ui(new Ui::EditPerson),
+    m_eventWidget(new EventWidget(this)) {
 
     UI_SETUP
 
     ui->id->setVisible(false);
-    ui->gridLayout->addWidget(new EventWidget(this));
+    ui->eventsTabLayout->addWidget(m_eventWidget.get());
+
 }
 
 EditPerson::~EditPerson() {
@@ -21,17 +23,18 @@ EditPerson::~EditPerson() {
 
 void EditPerson::edit(const people::Base *b) {
     clearForm();
+    m_eventWidget->initTableView();
+
     auto p = reinterpret_cast<const people::Person*>(b);
     qDebug() << p->firstName();
     ui->id->setValue(p->id());
     ui->firstName->setText(p->firstName());
     ui->familyName->setText(p->lastName());
-    ui->birthDate->setSelectedDate(p->birthDate().date());
-    ui->birthTime->setTime(p->birthDate().time());
-    ui->isDead->setChecked(!p->alive());
-    if(!p->alive()) {
-        ui->deathDate->setSelectedDate(p->deathDate().date());
-        ui->deathTime->setTime(p->deathDate().time());
+
+    qDebug() << __FUNCTION__ << " " << p->events().size();
+    for(auto& evt: p->events()) {
+        qDebug() << __FUNCTION__ << " " << (int) evt.type() << evt.date();
+        m_eventWidget->addEvent(evt);
     }
     show();
 }
@@ -43,13 +46,11 @@ void EditPerson::saveForm() {
     m_person->setId(ui->id->value());
     m_person->setFirstName(ui->firstName->text());
     m_person->setLastName(ui->familyName->text());
-    m_person->setBirthDate(QDateTime(ui->birthDate->selectedDate(), ui->birthTime->time()));
-    m_person->setAlive(!ui->isDead->isChecked());
-    if(m_person->alive()) {
-        m_person->setDeathDate(QDateTime(ui->deathDate->selectedDate(), ui->deathTime->time()));
-    }
+    m_person->setEvents(m_eventWidget->events());
 
+    m_eventWidget->initTableView();
     hide();
+
     emit save(static_cast<people::Base*>(m_person.get()));
 }
 
