@@ -35,11 +35,13 @@ void EditPerson::edit(const people::Base *b) {
     ui->firstName->setText(p->firstName());
     ui->familyName->setText(p->lastName());
 
-    qDebug() << __FUNCTION__ << " " << p->events().size();
     for(auto& evt: p->events()) {
-        qDebug() << __FUNCTION__ << " " << (int) evt.type() << evt.date();
         m_eventWidget->addEvent(evt);
     }
+
+    m_parentWidget->setMother(p->parent(people::Parent::Type::Mother));
+    m_parentWidget->setFather(p->parent(people::Parent::Type::Father));
+
     show();
 }
 
@@ -55,6 +57,10 @@ void EditPerson::saveForm() {
     m_person->setFirstName(ui->firstName->text());
     m_person->setLastName(ui->familyName->text());
     m_person->setEvents(m_eventWidget->events());
+    if(m_parentWidget->mother() != nullptr)
+        m_person->addParent(people::Parent::Type::Mother, *m_parentWidget->mother());
+    if(m_parentWidget->father() != nullptr)
+        m_person->addParent(people::Parent::Type::Father, *m_parentWidget->father());
 
     m_eventWidget->initTableView();
     hide();

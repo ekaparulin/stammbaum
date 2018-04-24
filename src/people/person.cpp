@@ -69,5 +69,13 @@ void Person::addEvent(const Event &e) {
     m_events.append(e);
 }
 
+Person::Sex Person::sex() const {
+    return m_sex;
+}
+
+void Person::setSex(const Sex &sex) {
+    m_sex = sex;
+}
+
 
 } /* namespace people */

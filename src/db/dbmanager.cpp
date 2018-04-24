@@ -29,6 +29,7 @@ Manager::Manager(const QString& path) {
                       ID VARCHAR PRIMARY KEY,
                       FAMILY_NAME TEXT,
                       FIRST_NAME TEXT NOT NULL,
+                      SEX INTEGER,
                       BIRTH_DATE DATE,
                       DEATH_DATE DATE,
                       ALIVE BOOLEAN,
@@ -53,6 +54,7 @@ bool Manager::addPerson(const people::Person *p) {
                           ID,
                           FAMILY_NAME,
                           FIRST_NAME,
+                          SEX,
                           BIRTH_DATE,
                           DEATH_DATE,
                           ALIVE,
@@ -62,6 +64,7 @@ bool Manager::addPerson(const people::Person *p) {
                           :ID,
                           :FAMILY_NAME,
                           :FIRST_NAME,
+                          :SEX,
                           :BIRTH_DATE,
                           :DEATH_DATE,
                           :ALIVE,
@@ -71,6 +74,7 @@ bool Manager::addPerson(const people::Person *p) {
     query.bindValue(":ID", p->id().toString());
     query.bindValue(":FAMILY_NAME", p->lastName());
     query.bindValue(":FIRST_NAME",  p->firstName());
+    query.bindValue(":SEX",  static_cast<int>(p->sex()));
 
     try {
         query.bindValue(":BIRTH_DATE",  p->event(people::Event::Type::Birth).date().toString(DATE_FORMAT));
@@ -108,6 +112,7 @@ bool Manager::updatePerson(const people::Person *p) {
                       UPDATE people SET
                           FAMILY_NAME = :FAMILY_NAME,
                           FIRST_NAME = :FIRST_NAME,
+                          SEX = :SEX,
                           BIRTH_DATE = :BIRTH_DATE,
                           DEATH_DATE = :DEATH_DATE,
                           ALIVE = :ALIVE,
@@ -118,6 +123,8 @@ bool Manager::updatePerson(const people::Person *p) {
     query.bindValue(":ID", p->id());
     query.bindValue(":FAMILY_NAME", p->lastName());
     query.bindValue(":FIRST_NAME",  p->firstName());
+    query.bindValue(":SEX", static_cast<int>(p->sex()));
+
     try {
         query.bindValue(":BIRTH_DATE",  p->event(people::Event::Type::Birth).date().toString(DATE_FORMAT));
     } catch(std::exception e) {}
@@ -159,7 +166,8 @@ std::shared_ptr<people::Person> Manager::person(const QUuid &id) {
     auto p = std::make_shared<people::Person>(id);
     auto lastNameIdx = query.record().indexOf("FAMILY_NAME");
     auto firstNameIdx = query.record().indexOf("FIRST_NAME");
-    auto birthNameIdx = query.record().indexOf("BIRTH_DATE");
+    auto sexIdx = query.record().indexOf("SEX");
+    auto birthDateIdx = query.record().indexOf("BIRTH_DATE");
     auto deathDateIdx = query.record().indexOf("DEATH_DATE");
     auto aliveIdx = query.record().indexOf("ALIVE");
     auto fatherIdIdx = query.record().indexOf("FATHER_ID");
@@ -168,10 +176,10 @@ std::shared_ptr<people::Person> Manager::person(const QUuid &id) {
     while (query.next()) {
         p->setLastName(query.value(lastNameIdx).toString());
         p->setFirstName(query.value(firstNameIdx).toString());
+        p->setSex(static_cast<people::Person::Sex>(query.value(sexIdx).toInt()));
 
-
-        if(!query.value(birthNameIdx).isNull()) {
-            p->addEvent(people::Event(people::Event::Type::Birth, QDateTime::fromString(query.value(birthNameIdx).toString(), DATE_FORMAT)));
+        if(!query.value(birthDateIdx).isNull()) {
+            p->addEvent(people::Event(people::Event::Type::Birth, QDateTime::fromString(query.value(birthDateIdx).toString(), DATE_FORMAT)));
         }
         if(!query.value(deathDateIdx).isNull()) {
             p->addEvent(people::Event(people::Event::Type::Death, QDateTime::fromString(query.value(deathDateIdx).toString(), DATE_FORMAT)));

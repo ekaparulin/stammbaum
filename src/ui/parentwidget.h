@@ -1,6 +1,7 @@
 #ifndef PARENTWIDGET_H
 #define PARENTWIDGET_H
 
+#include "people/person.h"
 #include "people/parent.h"
 #include "editparent.h"
 
@@ -22,11 +23,23 @@ public:
 public:
     static const QMap<people::Parent::Type, QString> TYPE_STRINGS;
 
+    std::shared_ptr<QUuid> mother() const;
+    void setMother(const QUuid &mother);
+
+    std::shared_ptr<QUuid> father() const;
+    void setFather(const QUuid &father);
+
+private slots:
+    void editFather(bool);
+    void editMother(bool);
 
 private:
     Ui::ParentWidget *ui;
-    std::shared_ptr<QStandardItemModel> model;
-    EditParent                          m_edit;
+
+    EditParent                          m_editMother;
+    EditParent                          m_editFather;
+    std::shared_ptr<QUuid>              m_mother {nullptr};
+    std::shared_ptr<QUuid>              m_father {nullptr};
 };
 
 #endif // PARENTWIDGET_H

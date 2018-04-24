@@ -12,6 +12,11 @@ namespace people {
 
 class Person: public Base {
 public:
+    enum class Sex: int {
+        Male,
+        Female
+    };
+
     Person(const QUuid& id = QUuid::createUuid());
     ~Person();
 
@@ -34,10 +39,14 @@ public:
     const Event& event(Event::Type) const;
     void addEvent(const Event&);
 
+    Sex sex() const;
+    void setSex(const Sex &sex);
+
 private:
     QUuid       m_id;
     QString     m_firstName;
     QString     m_lastName;
+    Sex         m_sex;
 
     QList<Event> m_events;
     QMap<Parent::Type, QUuid> m_parents;
