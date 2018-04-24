@@ -47,7 +47,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="eventsTab">
         <attribute name="title">
@@ -68,10 +68,24 @@
          </property>
         </layout>
        </widget>
-       <widget class="QWidget" name="tab_2">
+       <widget class="QWidget" name="parentsTab">
         <attribute name="title">
-         <string>Tab 2</string>
+         <string>Parents</string>
         </attribute>
+        <layout class="QVBoxLayout" name="parentsTabLayout">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+        </layout>
        </widget>
       </widget>
      </item>
@@ -81,15 +95,18 @@
         <string>Names</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_6">
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="familyName"/>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="firstName"/>
+        </item>
         <item row="2" column="0">
          <widget class="QLabel" name="label_3">
           <property name="text">
            <string>Family</string>
           </property>
          </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QLineEdit" name="familyName"/>
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="label_2">
@@ -98,11 +115,12 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="firstName"/>
-        </item>
-        <item row="0" column="1">
-         <widget class="QSpinBox" name="id"/>
+        <item row="0" column="0">
+         <widget class="QLabel" name="id">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

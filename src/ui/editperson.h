@@ -12,6 +12,7 @@ class EditPerson;
 }
 
 class EventWidget;
+class ParentWidget;
 class EditPerson : public EditDialog {
     Q_OBJECT
 
@@ -20,18 +21,22 @@ public:
     explicit EditPerson(QWidget *parent = 0);
     ~EditPerson();
 
-    void edit(const people::Base*);
+    void edit(const people::Base*) override;
 
 signals:
     void save(const people::Base*);
 
+public slots:
+    void add(bool) override;
+
 private slots:
-    void saveForm();
+    void saveForm() override;
 
 private:
     Ui::EditPerson  *ui;
     std::shared_ptr<people::Person> m_person {nullptr};
     std::shared_ptr<EventWidget>    m_eventWidget;
+    std::shared_ptr<ParentWidget>    m_parentWidget;
 };
 
 #endif // EDIT_PERSON_H

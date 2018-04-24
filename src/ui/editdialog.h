@@ -25,7 +25,7 @@ signals:
     void save(const people::Base*);
 
 public slots:
-    void add(bool);
+    virtual void add(bool);
 
 protected slots:
     virtual void saveForm() = 0;

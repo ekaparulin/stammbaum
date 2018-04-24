@@ -21,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->toolBar->addAction(addPerson);
 
 
+    ui->tabWidget->setCurrentIndex(0);
+
     loadModel();
     ui->personList->setModel(&m_model);
     ui->personList->setColumnHidden(0, true);
@@ -35,9 +37,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&m_editPersonDlg, SIGNAL(save(const people::Base*)), this, SLOT(savePerson(const people::Base*)));
 
     connect(ui->personList, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(personListClicked(const QModelIndex &)));
-
-    this->lower();
-
 }
 
 MainWindow::~MainWindow() {
@@ -58,10 +57,20 @@ void MainWindow::savePerson(const people::Base* b) {
 
     auto p = reinterpret_cast<const people::Person*>(b);
 
-    if(p->id() == 0) {
-        m_dbmPtr->addPerson(p);
-    } else {
+    // Look in table for an Id of the person
+    bool update = false;
+    for(int i=0; i< m_model.rowCount(); ++i) {
+        qDebug() << m_model.data(m_model.index(i,0)).toString();
+        if(m_model.data(m_model.index(i,0)).toString().compare(p->id().toString()) != 0) {
+            continue;
+        }
+        update = true;
+        break;
+    }
+    if(update) {
         m_dbmPtr->updatePerson(p);
+    } else {
+        m_dbmPtr->addPerson(p);
     }
     loadModel();
 }
@@ -74,7 +83,7 @@ void MainWindow::personListClicked(const QModelIndex &index) {
     qDebug() << index.row() << m_model.data(m_model.index(index.row(), 0));
     m_editPersonDlg.edit(
         reinterpret_cast<const people::Base *>(
-            m_dbmPtr->person(m_model.data(m_model.index(index.row(), 0)).toInt()).get()));
+            m_dbmPtr->person(m_model.data(m_model.index(index.row(), 0)).toString()).get()));
 }
 
 QActionGroup * MainWindow::personMenuItem(QMenu *menu, QModelIndex index,  const QString& label) {
@@ -104,7 +113,7 @@ void MainWindow::personMenu(QPoint pos) {
 void MainWindow::editPerson(QAction *action) {
     m_editPersonDlg.edit(
         reinterpret_cast<const people::Base *>(
-            m_dbmPtr->person(action->data().toInt()).get())
+            m_dbmPtr->person(action->data().toString()).get())
     );
 }
 
@@ -112,7 +121,7 @@ void MainWindow::deletePerson(QAction* action) {
     qDebug() << action->data();
 
     // TODO: Messagebox are you sure?
-    qDebug() << m_dbmPtr->deletePerson(action->data().toInt());
+    qDebug() << m_dbmPtr->deletePerson(action->data().toString());
 
     loadModel();
 }

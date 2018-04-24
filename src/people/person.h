@@ -3,14 +3,16 @@
 
 #include "base.h"
 #include "event.h"
+#include "parent.h"
 
-#include <QDateTime>
+#include <QMap>
+#include <QUuid>
 
 namespace people {
 
 class Person: public Base {
 public:
-    Person();
+    Person(const QUuid& id = QUuid::createUuid());
     ~Person();
 
     QString firstName() const;
@@ -22,14 +24,10 @@ public:
     bool alive() const;
     void setAlive(bool alive);
 
-    int fatherId() const;
-    void setFatherId(int fatherId);
+    void addParent(Parent::Type, const QUuid&);
+    QUuid parent(Parent::Type) const;
 
-    int motherId() const;
-    void setMotherId(int motherId);
-
-    int id() const;
-    void setId(int id);
+    const QUuid& id() const;
 
     QList<Event> events() const;
     void setEvents(const QList<Event> &events);
@@ -37,14 +35,14 @@ public:
     void addEvent(const Event&);
 
 private:
-    int         m_id {0};
+    QUuid       m_id;
     QString     m_firstName;
     QString     m_lastName;
+
     QList<Event> m_events;
+    QMap<Parent::Type, QUuid> m_parents;
 
     bool        m_alive {true};
-    int         m_fatherId {0};
-    int         m_motherId {0};
 };
 
 }

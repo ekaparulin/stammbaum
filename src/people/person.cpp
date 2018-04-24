@@ -1,7 +1,8 @@
 #include "person.h"
 
 namespace people {
-Person::Person() {
+Person::Person(const QUuid& id):
+    m_id(id) {
 
 }
 Person::~Person() {
@@ -32,28 +33,19 @@ void Person::setAlive(bool alive) {
     m_alive = alive;
 }
 
-int Person::fatherId() const {
-    return m_fatherId;
+void Person::addParent(Parent::Type t, const QUuid& i) {
+    m_parents[t]=i;
 }
 
-void Person::setFatherId(int fatherId) {
-    m_fatherId = fatherId;
+QUuid Person::parent(Parent::Type t) const {
+    if(m_parents.contains(t)) {
+        return m_parents[t];
+    }
+    throw std::exception();
 }
 
-int Person::motherId() const {
-    return m_motherId;
-}
-
-void Person::setMotherId(int motherId) {
-    m_motherId = motherId;
-}
-
-int Person::id() const {
+const QUuid& Person::id() const {
     return m_id;
-}
-
-void Person::setId(int id) {
-    m_id = id;
 }
 
 QList<Event> Person::events() const {

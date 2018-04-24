@@ -17,9 +17,12 @@
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
-      <widget class="QWidget" name="tab">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="peopleTab">
        <attribute name="title">
-        <string>Tab 1</string>
+        <string>People</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
@@ -31,10 +34,15 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="treeTab">
        <attribute name="title">
-        <string>Tab 2</string>
+        <string>Tree</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QGraphicsView" name="treeGraphicsView"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>

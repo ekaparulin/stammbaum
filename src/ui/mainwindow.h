@@ -5,6 +5,7 @@
 #include "db/dbmanager.h"
 
 #include <QActionGroup>
+#include <QGraphicsScene>
 #include <QMainWindow>
 #include <QSqlQueryModel>
 
@@ -39,6 +40,10 @@ private:
     QSqlQueryModel          m_model;
     db::Manager::ManagerPtr m_dbmPtr;
     EditPerson              m_editPersonDlg;
+    QGraphicsScene *scene;
+    QGraphicsEllipseItem *ellipse;
+    QGraphicsRectItem *rectangle;
+    QGraphicsTextItem *text;
 };
 
 #endif // MAINWINDOW_H

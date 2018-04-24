@@ -26,14 +26,14 @@ Manager::Manager(const QString& path) {
     QSqlQuery query;
     query.prepare(R"(
                   CREATE TABLE IF NOT EXISTS people(
-                      ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                      ID VARCHAR PRIMARY KEY,
                       FAMILY_NAME TEXT,
                       FIRST_NAME TEXT NOT NULL,
                       BIRTH_DATE DATE,
                       DEATH_DATE DATE,
                       ALIVE BOOLEAN,
-                      FATHER_ID INTEGER,
-                      MOTHER_ID INTEGER
+                      FATHER_ID VARCHAR,
+                      MOTHER_ID VARCHAR
                       );
                   )"
                  );
@@ -50,6 +50,7 @@ bool Manager::addPerson(const people::Person *p) {
     QSqlQuery query;
     query.prepare(R"(
                       INSERT INTO people(
+                          ID,
                           FAMILY_NAME,
                           FIRST_NAME,
                           BIRTH_DATE,
@@ -58,6 +59,7 @@ bool Manager::addPerson(const people::Person *p) {
                           FATHER_ID,
                           MOTHER_ID
                       ) values (
+                          :ID,
                           :FAMILY_NAME,
                           :FIRST_NAME,
                           :BIRTH_DATE,
@@ -66,23 +68,25 @@ bool Manager::addPerson(const people::Person *p) {
                           :FATHER_ID,
                           :MOTHER_ID
                       ))");
+    query.bindValue(":ID", p->id().toString());
     query.bindValue(":FAMILY_NAME", p->lastName());
     query.bindValue(":FIRST_NAME",  p->firstName());
 
     try {
         query.bindValue(":BIRTH_DATE",  p->event(people::Event::Type::Birth).date().toString(DATE_FORMAT));
-    } catch(std::exception e) {
+    } catch(std::exception e) {}
 
-    }
     try {
         query.bindValue(":DEATH_DATE",  p->event(people::Event::Type::Death).date().toString(DATE_FORMAT));
-    } catch(std::exception e) {
-
-    }
+    } catch(std::exception e) {}
 
     query.bindValue(":ALIVE",       p->alive());
-    query.bindValue(":FATHER_ID",   p->fatherId());
-    query.bindValue(":MOTHER_ID",   p->motherId());
+    try {
+        query.bindValue(":FATHER_ID",   p->parent(people::Parent::Type::Father).toString());
+    } catch(std::exception) {}
+    try {
+        query.bindValue(":MOTHER_ID",   p->parent(people::Parent::Type::Mother).toString());
+    } catch(std::exception) {}
 
     if(query.exec()) {
         success = true;
@@ -116,17 +120,18 @@ bool Manager::updatePerson(const people::Person *p) {
     query.bindValue(":FIRST_NAME",  p->firstName());
     try {
         query.bindValue(":BIRTH_DATE",  p->event(people::Event::Type::Birth).date().toString(DATE_FORMAT));
-    } catch(std::exception e) {
-
-    }
+    } catch(std::exception e) {}
     try {
         query.bindValue(":DEATH_DATE",  p->event(people::Event::Type::Death).date().toString(DATE_FORMAT));
-    } catch(std::exception e) {
-
-    }
+    } catch(std::exception e) {}
     query.bindValue(":ALIVE",       p->alive());
-    query.bindValue(":FATHER_ID",   p->fatherId());
-    query.bindValue(":MOTHER_ID",   p->motherId());
+    try {
+        query.bindValue(":FATHER_ID",   p->parent(people::Parent::Type::Father).toString());
+    } catch(std::exception) {}
+    try {
+        query.bindValue(":MOTHER_ID",   p->parent(people::Parent::Type::Mother).toString());
+    } catch(std::exception) {}
+
 
     if(query.exec()) {
         success = true;
@@ -138,21 +143,20 @@ bool Manager::updatePerson(const people::Person *p) {
     return success;
 }
 
-bool Manager::deletePerson(const int &id) {
+bool Manager::deletePerson(const QUuid &id) {
     QSqlQuery query;
     query.prepare("DELETE FROM people WHERE ID = (:id)");
-    query.bindValue(":id", id);
+    query.bindValue(":id", id.toString());
     return query.exec();
 }
 
-std::shared_ptr<people::Person> Manager::person(const int &id) {
-    QSqlQuery query("SELECT * FROM people WHERE ID = " + QString::number(id));
+std::shared_ptr<people::Person> Manager::person(const QUuid &id) {
+    QSqlQuery query("SELECT * FROM people WHERE ID = \""+ id.toString()+"\"");
     if(!query.exec()) {
         qDebug() << __FUNCTION__ << " error:  " << query.lastError();
     }
 
-    auto p = std::make_shared<people::Person>();
-    p->setId(id);
+    auto p = std::make_shared<people::Person>(id);
     auto lastNameIdx = query.record().indexOf("FAMILY_NAME");
     auto firstNameIdx = query.record().indexOf("FIRST_NAME");
     auto birthNameIdx = query.record().indexOf("BIRTH_DATE");
@@ -172,43 +176,13 @@ std::shared_ptr<people::Person> Manager::person(const int &id) {
         if(!query.value(deathDateIdx).isNull()) {
             p->addEvent(people::Event(people::Event::Type::Death, QDateTime::fromString(query.value(deathDateIdx).toString(), DATE_FORMAT)));
         }
-        qDebug() << __FUNCTION__ << " " << query.value(birthNameIdx).toString() << " " << query.value(birthNameIdx).isNull() ;
-        qDebug() << __FUNCTION__ << " " << query.value(deathDateIdx).toString();
-
 
         p->setAlive(query.value(aliveIdx).toBool());
-        p->setFatherId(query.value(fatherIdIdx).toInt());
-        p->setMotherId(query.value(motherIdIdx).toInt());
+        p->addParent(people::Parent::Type::Father, QUuid(query.value(fatherIdIdx).toString()));
+        p->addParent(people::Parent::Type::Mother, QUuid(query.value(motherIdIdx).toString()));
     }
 
     return p;
-}
-
-bool Manager::personExists(const QString &name) {
-    QSqlQuery query;
-    query.prepare("SELECT name FROM people WHERE name = (:name)");
-    query.bindValue(":name", name);
-
-    if (query.exec()) {
-        return query.next();
-    }
-    return false;
-}
-
-bool Manager::deleteAll() {
-    QSqlQuery query;
-    query.prepare("DELETE FROM people");
-    query.exec();
-    return true;
-}
-
-void Manager::getAllPersons() {
-    QSqlQuery query("SELECT * FROM people");
-    int idName = query.record().indexOf("name");
-    while (query.next()) {
-        QString name = query.value(idName).toString();
-        qDebug() << name;
-    }
 }
 
 Manager::ManagerPtr Manager::defaultManager() {

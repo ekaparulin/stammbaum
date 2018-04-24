@@ -19,11 +19,8 @@ public:
 
     bool addPerson(const people::Person*);
     bool updatePerson(const people::Person*);
-    bool deletePerson(const int&);
-    std::shared_ptr<people::Person> person(const int&);
-    bool personExists(const QString&);
-    bool deleteAll();
-    void getAllPersons();
+    bool deletePerson(const QUuid&);
+    std::shared_ptr<people::Person> person(const QUuid&);
 
     static ManagerPtr defaultManager();
 

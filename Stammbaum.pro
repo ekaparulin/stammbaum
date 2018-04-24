@@ -36,8 +36,11 @@ SOURCES += \
         src/ui/editdialog.cpp \
         src/ui/editperson.cpp \
         src/people/base.cpp \
-    src/ui/eventwidget.cpp \
-    src/ui/editevent.cpp
+        src/ui/eventwidget.cpp \
+        src/ui/editevent.cpp \
+    src/people/parent.cpp \
+    src/ui/parentwidget.cpp \
+    src/ui/editparent.cpp
 
 HEADERS += \
         src/ui/mainwindow.h \
@@ -47,20 +50,25 @@ HEADERS += \
         src/ui/editdialog.h \
         src/ui/editperson.h \
         src/people/base.h \
-    src/ui/eventwidget.h \
-    src/ui/editevent.h
+        src/ui/eventwidget.h \
+        src/ui/editevent.h \
+    src/people/parent.h \
+    src/ui/parentwidget.h \
+    src/ui/editparent.h
 
 FORMS += \
         src/ui/mainwindow.ui \
         src/ui/editperson.ui \
-    src/ui/eventwidget.ui \
-    src/ui/editevent.ui
+        src/ui/eventwidget.ui \
+        src/ui/editevent.ui \
+    src/ui/parentwidget.ui \
+    src/ui/editparent.ui
 
 SUBDIRS += \
         stammbaum.pro
 
 DISTFILES += \
-    README.md
+        README.md
 
 RESOURCES += \
-    res/stammbaum.qrc
+        res/stammbaum.qrc
