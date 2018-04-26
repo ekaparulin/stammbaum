@@ -33,7 +33,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->personList->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->personList, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(personMenu(QPoint)));
 
-
     connect(&m_editPersonDlg, SIGNAL(save(const people::Base*)), this, SLOT(savePerson(const people::Base*)));
 
     connect(ui->personList, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(personListClicked(const QModelIndex &)));
@@ -53,10 +52,11 @@ void MainWindow::loadModel() {
 }
 
 void MainWindow::savePerson(const people::Base* b) {
-    qDebug() << __FUNCTION__;
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
 
     auto p = reinterpret_cast<const people::Person*>(b);
 
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
     // Look in table for an Id of the person
     bool update = false;
     for(int i=0; i< m_model.rowCount(); ++i) {
@@ -67,12 +67,17 @@ void MainWindow::savePerson(const people::Base* b) {
         update = true;
         break;
     }
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
     if(update) {
+        qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
         m_dbmPtr->updatePerson(p);
     } else {
+        qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
         m_dbmPtr->addPerson(p);
     }
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
     loadModel();
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
 }
 
 void MainWindow::personListClicked(const QModelIndex &index) {
@@ -80,7 +85,7 @@ void MainWindow::personListClicked(const QModelIndex &index) {
         return;
     }
 
-    qDebug() << index.row() << m_model.data(m_model.index(index.row(), 0));
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__ <<  index.row() << m_model.data(m_model.index(index.row(), 0));
     m_editPersonDlg.edit(
         reinterpret_cast<const people::Base *>(
             m_dbmPtr->person(m_model.data(m_model.index(index.row(), 0)).toString()).get()));

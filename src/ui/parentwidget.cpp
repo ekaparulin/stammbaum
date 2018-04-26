@@ -25,27 +25,28 @@ ParentWidget::~ParentWidget() {
     delete ui;
 }
 
-std::shared_ptr<QUuid> ParentWidget::mother() const {
-    return m_mother;
-}
-
-void ParentWidget::setMother(const QUuid &mother) {
-    m_mother = std::make_shared<QUuid>(mother);
-}
-
-std::shared_ptr<QUuid> ParentWidget::father() const {
-    return m_father;
-}
-
-void ParentWidget::setFather(const QUuid &father) {
-    m_father = std::make_shared<QUuid>(father);
-}
-
 void ParentWidget::editFather(bool) {
-    m_editFather.edit(m_father);
+    m_editFather.edit(m_person, people::Parent::Type::Father);
 }
 
 void ParentWidget::editMother(bool) {
-    m_editMother.edit(m_mother);
+    m_editMother.edit(m_person, people::Parent::Type::Mother);
+}
+
+std::shared_ptr<const people::Person> ParentWidget::person() const {
+    return m_person;
+}
+
+void ParentWidget::setPerson(const people::Person p) {
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__ << (p.toString());
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__ << (m_person.use_count());
+    m_person = std::make_shared<const people::Person>(p);
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__ << (m_person.use_count());
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
+
+}
+
+const std::shared_ptr<QUuid> ParentWidget::parent(people::Parent::Type t) {
+    return m_person->parent(t);
 }
 

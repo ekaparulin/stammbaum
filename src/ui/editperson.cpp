@@ -26,9 +26,11 @@ EditPerson::~EditPerson() {
 }
 
 void EditPerson::edit(const people::Base *b) {
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
     clearForm();
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
     m_eventWidget->initTableView();
-
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
     auto p = reinterpret_cast<const people::Person*>(b);
     qDebug() << p->firstName();
     ui->id->setText(p->id().toString());
@@ -38,10 +40,9 @@ void EditPerson::edit(const people::Base *b) {
     for(auto& evt: p->events()) {
         m_eventWidget->addEvent(evt);
     }
-
-    m_parentWidget->setMother(p->parent(people::Parent::Type::Mother));
-    m_parentWidget->setFather(p->parent(people::Parent::Type::Father));
-
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
+    m_parentWidget->setPerson(*p);
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
     show();
 }
 
@@ -57,11 +58,14 @@ void EditPerson::saveForm() {
     m_person->setFirstName(ui->firstName->text());
     m_person->setLastName(ui->familyName->text());
     m_person->setEvents(m_eventWidget->events());
-    if(m_parentWidget->mother() != nullptr)
-        m_person->addParent(people::Parent::Type::Mother, *m_parentWidget->mother());
-    if(m_parentWidget->father() != nullptr)
-        m_person->addParent(people::Parent::Type::Father, *m_parentWidget->father());
 
+    qDebug() << __FUNCTION__ << __LINE__  ;
+    //if(m_parentWidget->parent(people::Parent::Type::Mother) != nullptr)
+    //    m_person->addParent(people::Parent::Type::Mother, *(m_parentWidget->parent(people::Parent::Type::Mother)));
+    qDebug() << __FUNCTION__ << __LINE__;
+    //if(m_parentWidget->parent(people::Parent::Type::Father) != nullptr)
+    //    m_person->addParent(people::Parent::Type::Father, *(m_parentWidget->parent(people::Parent::Type::Father)));
+    qDebug() << __FUNCTION__ << __LINE__;
     m_eventWidget->initTableView();
     hide();
 

@@ -1,7 +1,11 @@
 #ifndef EDITPARENT_H
 #define EDITPARENT_H
-#include"people/parent.h"
+
+#include "people/parent.h"
+#include "db/dbmanager.h"
+
 #include <QDialog>
+#include <QSqlQueryModel>
 
 namespace Ui {
 class EditParent;
@@ -14,7 +18,7 @@ public:
     explicit EditParent(QWidget *parent = 0, people::Parent::Type = people::Parent::Type::Mother);
     ~EditParent();
 
-    void edit(std::shared_ptr<QUuid>);
+    void edit(const std::shared_ptr<const people::Person>&, people::Parent::Type);
 
 signals:
     void save(const QUuid&);
@@ -25,6 +29,7 @@ private slots:
 private:
     Ui::EditParent *ui;
     people::Parent::Type m_type;
+    QSqlQueryModel  m_model;
 };
 
 #endif // EDITPARENT_H

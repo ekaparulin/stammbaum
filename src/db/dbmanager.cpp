@@ -85,12 +85,11 @@ bool Manager::addPerson(const people::Person *p) {
     } catch(std::exception e) {}
 
     query.bindValue(":ALIVE",       p->alive());
-    try {
-        query.bindValue(":FATHER_ID",   p->parent(people::Parent::Type::Father).toString());
-    } catch(std::exception) {}
-    try {
-        query.bindValue(":MOTHER_ID",   p->parent(people::Parent::Type::Mother).toString());
-    } catch(std::exception) {}
+    if(p->parent(people::Parent::Type::Father) != nullptr)
+        query.bindValue(":FATHER_ID",   p->parent(people::Parent::Type::Father)->toString());
+
+    if(p->parent(people::Parent::Type::Mother) != nullptr)
+        query.bindValue(":MOTHER_ID",   p->parent(people::Parent::Type::Mother)->toString());
 
     if(query.exec()) {
         success = true;
@@ -132,13 +131,10 @@ bool Manager::updatePerson(const people::Person *p) {
         query.bindValue(":DEATH_DATE",  p->event(people::Event::Type::Death).date().toString(DATE_FORMAT));
     } catch(std::exception e) {}
     query.bindValue(":ALIVE",       p->alive());
-    try {
-        query.bindValue(":FATHER_ID",   p->parent(people::Parent::Type::Father).toString());
-    } catch(std::exception) {}
-    try {
-        query.bindValue(":MOTHER_ID",   p->parent(people::Parent::Type::Mother).toString());
-    } catch(std::exception) {}
-
+    if(p->parent(people::Parent::Type::Father) != nullptr)
+        query.bindValue(":FATHER_ID",   p->parent(people::Parent::Type::Father)->toString());
+    if(p->parent(people::Parent::Type::Mother) != nullptr)
+        query.bindValue(":MOTHER_ID",   p->parent(people::Parent::Type::Mother)->toString());
 
     if(query.exec()) {
         success = true;

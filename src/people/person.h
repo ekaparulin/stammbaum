@@ -5,7 +5,7 @@
 #include "event.h"
 #include "parent.h"
 
-#include <QMap>
+#include <map>
 #include <QUuid>
 
 namespace people {
@@ -30,7 +30,7 @@ public:
     void setAlive(bool alive);
 
     void addParent(Parent::Type, const QUuid&);
-    QUuid parent(Parent::Type) const;
+    std::shared_ptr<QUuid> parent(Parent::Type) const;
 
     const QUuid& id() const;
 
@@ -42,6 +42,8 @@ public:
     Sex sex() const;
     void setSex(const Sex &sex);
 
+    QString toString() const;
+
 private:
     QUuid       m_id;
     QString     m_firstName;
@@ -49,7 +51,7 @@ private:
     Sex         m_sex;
 
     QList<Event> m_events;
-    QMap<Parent::Type, QUuid> m_parents;
+    std::map<Parent::Type, std::shared_ptr<QUuid>> m_parents;
 
     bool        m_alive {true};
 };
