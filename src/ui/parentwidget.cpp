@@ -18,7 +18,8 @@ ParentWidget::ParentWidget(QWidget *parent) :
     connect(ui->motherBtn, SIGNAL(clicked(bool)),this,SLOT(editMother(bool)));
     connect(ui->fatherBtn, SIGNAL(clicked(bool)),this,SLOT(editFather(bool)));
 
-
+    connect(&m_editFather, SIGNAL(save(const QUuid&)), this, SLOT(saveFather(const QUuid&)));
+    connect(&m_editMother, SIGNAL(save(const QUuid&)), this, SLOT(saveMother(const QUuid&)));
 }
 
 ParentWidget::~ParentWidget() {
@@ -26,24 +27,45 @@ ParentWidget::~ParentWidget() {
 }
 
 void ParentWidget::editFather(bool) {
-    m_editFather.edit(m_person, people::Parent::Type::Father);
+    m_editFather.edit(m_person);
 }
 
 void ParentWidget::editMother(bool) {
-    m_editMother.edit(m_person, people::Parent::Type::Mother);
+    m_editMother.edit(m_person);
 }
 
-std::shared_ptr<const people::Person> ParentWidget::person() const {
-    return m_person;
+void ParentWidget::saveFather(const QUuid &id) {
+    m_person->addParent(people::Parent::Type::Father, id);
+    updateUi();
 }
 
-void ParentWidget::setPerson(const people::Person p) {
-    qDebug() << __FILE__ << __LINE__ << __FUNCTION__ << (p.toString());
-    qDebug() << __FILE__ << __LINE__ << __FUNCTION__ << (m_person.use_count());
-    m_person = std::make_shared<const people::Person>(p);
-    qDebug() << __FILE__ << __LINE__ << __FUNCTION__ << (m_person.use_count());
-    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
+void ParentWidget::saveMother(const QUuid &id) {
+    m_person->addParent(people::Parent::Type::Mother, id);
+    updateUi();
+}
 
+void ParentWidget::clearUi() {
+    ui->motherText->setText("");
+    ui->fatherText->setText("");
+}
+
+void ParentWidget::updateUi() {
+    clearUi();
+    auto momId = m_person->parent(people::Parent::Type::Mother);
+    if(momId.use_count()) {
+        ui->motherText->setText(momId->toString());
+    }
+
+    auto dadId = m_person->parent(people::Parent::Type::Father);
+    if(dadId.use_count()) {
+        ui->fatherText->setText(dadId->toString());
+    }
+}
+
+void ParentWidget::setPerson(const people::Person *p) {
+
+    m_person = std::make_shared<people::Person>(p != nullptr ? people::Person(*p): people::Person());
+    updateUi();
 }
 
 const std::shared_ptr<QUuid> ParentWidget::parent(people::Parent::Type t) {

@@ -13,6 +13,7 @@ namespace people {
 class Person: public Base {
 public:
     enum class Sex: int {
+        Unknown,
         Male,
         Female
     };
@@ -48,7 +49,7 @@ private:
     QUuid       m_id;
     QString     m_firstName;
     QString     m_lastName;
-    Sex         m_sex;
+    Sex         m_sex { Sex::Unknown };
 
     QList<Event> m_events;
     std::map<Parent::Type, std::shared_ptr<QUuid>> m_parents;

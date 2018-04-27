@@ -7,6 +7,7 @@
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QTimeEdit>
+#include <QComboBox>
 
 EditDialog::EditDialog(QWidget *parent) :
     QDialog(parent) {
@@ -37,6 +38,9 @@ void EditDialog::clearForm() {
     }
     foreach(QSpinBox *widget, this->findChildren<QSpinBox*>()) {
         widget->setValue(0);
+    }
+    foreach(QComboBox *widget, this->findChildren<QComboBox*>()) {
+        widget->setCurrentIndex(0);
     }
 }
 

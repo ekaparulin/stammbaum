@@ -1,7 +1,9 @@
 #ifndef EDITPARENT_H
 #define EDITPARENT_H
 
+
 #include "people/parent.h"
+#include "people/person.h"
 #include "db/dbmanager.h"
 
 #include <QDialog>
@@ -18,7 +20,9 @@ public:
     explicit EditParent(QWidget *parent = 0, people::Parent::Type = people::Parent::Type::Mother);
     ~EditParent();
 
-    void edit(const std::shared_ptr<const people::Person>&, people::Parent::Type);
+    void edit(const std::shared_ptr<const people::Person>&);
+
+    people::Person::Sex parentsGender();
 
 signals:
     void save(const QUuid&);

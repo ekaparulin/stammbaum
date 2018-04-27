@@ -26,13 +26,9 @@ EditPerson::~EditPerson() {
 }
 
 void EditPerson::edit(const people::Base *b) {
-    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
     clearForm();
-    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
     m_eventWidget->initTableView();
-    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
     auto p = reinterpret_cast<const people::Person*>(b);
-    qDebug() << p->firstName();
     ui->id->setText(p->id().toString());
     ui->firstName->setText(p->firstName());
     ui->familyName->setText(p->lastName());
@@ -40,15 +36,16 @@ void EditPerson::edit(const people::Base *b) {
     for(auto& evt: p->events()) {
         m_eventWidget->addEvent(evt);
     }
-    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
-    m_parentWidget->setPerson(*p);
-    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
+
+    ui->sex->setCurrentIndex(static_cast<int>(p->sex()));
+    m_parentWidget->setPerson(p);
     show();
 }
 
 void EditPerson::add(bool f) {
     EditDialog::add(f);
     ui->id->setText(QUuid::createUuid().toString());
+    m_parentWidget->setPerson(nullptr);
 }
 
 void EditPerson::saveForm() {
@@ -57,15 +54,14 @@ void EditPerson::saveForm() {
     m_person = std::make_shared<people::Person>(QUuid::fromString(ui->id->text()));
     m_person->setFirstName(ui->firstName->text());
     m_person->setLastName(ui->familyName->text());
+    m_person->setSex(static_cast<people::Person::Sex>(ui->sex->currentIndex()));
     m_person->setEvents(m_eventWidget->events());
 
-    qDebug() << __FUNCTION__ << __LINE__  ;
-    //if(m_parentWidget->parent(people::Parent::Type::Mother) != nullptr)
-    //    m_person->addParent(people::Parent::Type::Mother, *(m_parentWidget->parent(people::Parent::Type::Mother)));
-    qDebug() << __FUNCTION__ << __LINE__;
-    //if(m_parentWidget->parent(people::Parent::Type::Father) != nullptr)
-    //    m_person->addParent(people::Parent::Type::Father, *(m_parentWidget->parent(people::Parent::Type::Father)));
-    qDebug() << __FUNCTION__ << __LINE__;
+    if(m_parentWidget->parent(people::Parent::Type::Mother).use_count())
+        m_person->addParent(people::Parent::Type::Mother, *(m_parentWidget->parent(people::Parent::Type::Mother)));
+    if(m_parentWidget->parent(people::Parent::Type::Father).use_count())
+        m_person->addParent(people::Parent::Type::Father, *(m_parentWidget->parent(people::Parent::Type::Father)));
+
     m_eventWidget->initTableView();
     hide();
 

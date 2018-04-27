@@ -23,18 +23,23 @@ public:
 public:
     static const QMap<people::Parent::Type, QString> TYPE_STRINGS;
 
-    std::shared_ptr<const people::Person> person() const;
-    void setPerson(const people::Person person);
+    void setPerson(const people::Person *person);
 
     const std::shared_ptr<QUuid> parent(people::Parent::Type);
+
+    void clearUi();
 
 private slots:
     void editFather(bool);
     void editMother(bool);
 
+    void saveFather(const QUuid&);
+    void saveMother(const QUuid&);
+private:
+    void updateUi();
 private:
     Ui::ParentWidget *ui;
-    std::shared_ptr<const people::Person> m_person {nullptr};
+    std::shared_ptr<people::Person>     m_person;
     EditParent                          m_editMother;
     EditParent                          m_editFather;
 

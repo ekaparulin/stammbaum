@@ -28,12 +28,9 @@ EditParent::~EditParent() {
     delete ui;
 }
 
-void EditParent::edit(const std::shared_ptr<const people::Person>&p,
-                      people::Parent::Type t) {
-
-    // Populate table filtered by parent sex
+people::Person::Sex EditParent::parentsGender() {
     people::Person::Sex sex;
-    switch(t) {
+    switch(m_type) {
     case people::Parent::Type::Father:
         sex = people::Person::Sex::Male;
         break;
@@ -42,7 +39,13 @@ void EditParent::edit(const std::shared_ptr<const people::Person>&p,
         break;
     }
 
-    QString query(QString("select ID, FAMILY_NAME, FIRST_NAME, BIRTH_DATE from people where SEX = %1").arg(QString::number(static_cast<int>(sex))));
+    return sex;
+}
+
+void EditParent::edit(const std::shared_ptr<const people::Person>&p) {
+
+    // Populate table filtered by parent gender
+    QString query(QString("select ID, FAMILY_NAME, FIRST_NAME, BIRTH_DATE from people where SEX = %1").arg(QString::number(static_cast<int>(parentsGender()))));
     m_model.setQuery(query);
     show();
 
@@ -51,15 +54,21 @@ void EditParent::edit(const std::shared_ptr<const people::Person>&p,
     }
 
     // Filter out yourself from parent list
-    m_model.setQuery(query + QString("AND ID != \"%1\"").arg(p->id().toString()));
-    qDebug() << __LINE__ << __FUNCTION__ << p.use_count();
-    qDebug() << p->toString();
+    m_model.setQuery(query + QString(" AND ID != \"%1\"").arg(p->id().toString()));
 
-    if(p->parent(t)->isNull()) {
+    if(p->parent(m_type).use_count() == 0 || p->parent(m_type)->isNull()) {
         return;
     }
 
     // TODO: p->parent(t) should be highlighted in the table
+    for(int i = 0; i < m_model.rowCount(); ++i) {
+        if(m_model.data(m_model.index(i, 0)).toString()
+                .compare(p->parent(m_type)->toString()) != 0) {
+            continue;
+        }
+        ui->tableView->setCurrentIndex(m_model.index(i, 0));
+        break;
+    }
 
 }
 
@@ -68,5 +77,5 @@ void EditParent::addPerson() {
 }
 
 void EditParent::saveParent() {
-    qDebug() << __FUNCTION__;
+    emit save(QUuid::fromString(m_model.data(m_model.index(ui->tableView->currentIndex().row(), 0)).toString()));
 }
