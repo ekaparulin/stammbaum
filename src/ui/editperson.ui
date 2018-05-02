@@ -98,7 +98,7 @@
         <item row="3" column="0">
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>Sex</string>
+           <string>Gender</string>
           </property>
          </widget>
         </item>
@@ -130,7 +130,7 @@
          </widget>
         </item>
         <item row="3" column="2">
-         <widget class="QComboBox" name="sex">
+         <widget class="QComboBox" name="gender">
           <item>
            <property name="text">
             <string/>

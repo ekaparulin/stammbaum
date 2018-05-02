@@ -17,11 +17,8 @@ EditEvent::~EditEvent() {
     delete ui;
 }
 
-void EditEvent::edit(const people::Base *b) {
+void EditEvent::edit(const people::Base *) {
     clearForm();
-    // e --> UI
-    auto e = reinterpret_cast<const people::Event*>(b);
-    qDebug() << e->date();
     show();
 }
 
@@ -47,7 +44,6 @@ void EditEvent::setTypes(const QList<people::Event::Type> &types) {
 }
 
 void EditEvent::setDate(const QDateTime &dt) {
-    qDebug() << __FUNCTION__ << dt;
     ui->calendarWidget->setSelectedDate(dt.date());
     ui->timeEdit->setTime(dt.time());
 }

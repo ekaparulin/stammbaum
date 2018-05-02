@@ -14,19 +14,24 @@ namespace db {
 class Manager {
 public:
     using ManagerPtr = std::shared_ptr<Manager>;
+    static const QString DATE_FORMAT;
 
-    Manager(const QString&);
+    Manager(Manager&) = delete;
+    Manager& operator=(Manager const&) = delete;
+    ~Manager();
 
     bool addPerson(const people::Person*);
     bool updatePerson(const people::Person*);
     bool deletePerson(const QUuid&);
     std::shared_ptr<people::Person> person(const QUuid&);
 
-    static ManagerPtr defaultManager();
+    static ManagerPtr instance();
 
 private:
-    static const QString DATE_FORMAT;
+    Manager(const QString&);
+private:
     QSqlDatabase m_db;
+
 };
 
 } /* namespace db */

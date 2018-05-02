@@ -42,6 +42,7 @@ private:
     std::shared_ptr<people::Person>     m_person;
     EditParent                          m_editMother;
     EditParent                          m_editFather;
+    db::Manager::ManagerPtr             m_dbm;
 
 };
 

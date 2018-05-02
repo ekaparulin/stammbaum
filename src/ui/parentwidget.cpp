@@ -12,7 +12,8 @@ ParentWidget::ParentWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ParentWidget),
     m_editMother(this, people::Parent::Type::Mother),
-    m_editFather(this, people::Parent::Type::Father) {
+    m_editFather(this, people::Parent::Type::Father),
+    m_dbm(db::Manager::instance()) {
     ui->setupUi(this);
 
     connect(ui->motherBtn, SIGNAL(clicked(bool)),this,SLOT(editMother(bool)));
@@ -53,12 +54,12 @@ void ParentWidget::updateUi() {
     clearUi();
     auto momId = m_person->parent(people::Parent::Type::Mother);
     if(momId.use_count()) {
-        ui->motherText->setText(momId->toString());
+        ui->motherText->setText(m_dbm->person(momId->toString())->fullName());
     }
 
     auto dadId = m_person->parent(people::Parent::Type::Father);
     if(dadId.use_count()) {
-        ui->fatherText->setText(dadId->toString());
+        ui->fatherText->setText(m_dbm->person(dadId->toString())->fullName());
     }
 }
 

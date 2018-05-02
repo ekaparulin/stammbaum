@@ -2,10 +2,7 @@
 #define EDIT_PERSON_H
 
 #include "editdialog.h"
-
-namespace people {
-class Person;
-}
+#include "people/person.h"
 
 namespace Ui {
 class EditPerson;
@@ -22,7 +19,7 @@ public:
     ~EditPerson();
 
     void edit(const people::Base*) override;
-
+    void setGender(people::Person::Gender);
 signals:
     void save(const people::Base*);
 

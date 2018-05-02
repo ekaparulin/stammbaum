@@ -102,14 +102,12 @@ QList<people::Event::Type> EventWidget::pendingEvents() const {
 }
 
 void EventWidget::addEvent(bool) {
-    qDebug() << __FUNCTION__;
     m_edit.setTypes(pendingEvents());
     m_edit.show();
 }
 
 void EventWidget::saveEvent(const people::Base *b) {
     auto e = reinterpret_cast<const people::Event*>(b);
-    qDebug() << __FUNCTION__ << e->date() << (int) e->type();
     addEvent(*e);
 }
 

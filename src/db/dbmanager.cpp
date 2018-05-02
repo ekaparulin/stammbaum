@@ -12,6 +12,7 @@ namespace db {
 
 const QString Manager::DATE_FORMAT = "yyyy-MM-dd hh:mm:ss.000";
 
+
 Manager::Manager(const QString& path) {
     m_db = QSqlDatabase::addDatabase("QSQLITE");
     m_db.setDatabaseName(path);
@@ -46,6 +47,10 @@ Manager::Manager(const QString& path) {
 
 }
 
+Manager::~Manager() {
+    qDebug() << __FUNCTION__;
+}
+
 bool Manager::addPerson(const people::Person *p) {
     bool success = false;
     QSqlQuery query;
@@ -74,15 +79,15 @@ bool Manager::addPerson(const people::Person *p) {
     query.bindValue(":ID", p->id().toString());
     query.bindValue(":FAMILY_NAME", p->lastName());
     query.bindValue(":FIRST_NAME",  p->firstName());
-    query.bindValue(":SEX",  static_cast<int>(p->sex()));
+    query.bindValue(":SEX",  static_cast<int>(p->gender()));
 
-    try {
-        query.bindValue(":BIRTH_DATE",  p->event(people::Event::Type::Birth).date().toString(DATE_FORMAT));
-    } catch(std::exception e) {}
+    if(p->event(people::Event::Type::Birth).use_count()) {
+        query.bindValue(":BIRTH_DATE",  p->event(people::Event::Type::Birth)->date().toString(DATE_FORMAT));
+    }
 
-    try {
-        query.bindValue(":DEATH_DATE",  p->event(people::Event::Type::Death).date().toString(DATE_FORMAT));
-    } catch(std::exception e) {}
+    if(p->event(people::Event::Type::Death).use_count()) {
+        query.bindValue(":DEATH_DATE",  p->event(people::Event::Type::Death)->date().toString(DATE_FORMAT));
+    }
 
     query.bindValue(":ALIVE",       p->alive());
     if(p->parent(people::Parent::Type::Father) != nullptr)
@@ -93,8 +98,9 @@ bool Manager::addPerson(const people::Person *p) {
 
     if(query.exec()) {
         success = true;
+        qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
     } else {
-        qDebug() << __FUNCTION__ << " error:  "
+        qDebug() << __FILE__ << __LINE__ << __FUNCTION__
                  << query.lastError();
     }
 
@@ -122,24 +128,32 @@ bool Manager::updatePerson(const people::Person *p) {
     query.bindValue(":ID", p->id());
     query.bindValue(":FAMILY_NAME", p->lastName());
     query.bindValue(":FIRST_NAME",  p->firstName());
-    query.bindValue(":SEX", static_cast<int>(p->sex()));
+    query.bindValue(":SEX", static_cast<int>(p->gender()));
 
-    try {
-        query.bindValue(":BIRTH_DATE",  p->event(people::Event::Type::Birth).date().toString(DATE_FORMAT));
-    } catch(std::exception e) {}
-    try {
-        query.bindValue(":DEATH_DATE",  p->event(people::Event::Type::Death).date().toString(DATE_FORMAT));
-    } catch(std::exception e) {}
+    if(p->event(people::Event::Type::Birth).use_count()) {
+        query.bindValue(":BIRTH_DATE",
+                        p->event(people::Event::Type::Birth)->date()
+                        .toString(DATE_FORMAT));
+    }
+    if(p->event(people::Event::Type::Death).use_count()) {
+        query.bindValue(":DEATH_DATE",
+                        p->event(people::Event::Type::Death)->date()
+                        .toString(DATE_FORMAT));
+    }
     query.bindValue(":ALIVE",       p->alive());
-    if(p->parent(people::Parent::Type::Father) != nullptr)
-        query.bindValue(":FATHER_ID",   p->parent(people::Parent::Type::Father)->toString());
-    if(p->parent(people::Parent::Type::Mother) != nullptr)
-        query.bindValue(":MOTHER_ID",   p->parent(people::Parent::Type::Mother)->toString());
+    if(p->parent(people::Parent::Type::Father).use_count()) {
+        query.bindValue(":FATHER_ID",
+                        p->parent(people::Parent::Type::Father)->toString());
+    }
+    if(p->parent(people::Parent::Type::Mother).use_count()) {
+        query.bindValue(":MOTHER_ID",
+                        p->parent(people::Parent::Type::Mother)->toString());
+    }
 
     if(query.exec()) {
         success = true;
     } else {
-        qDebug() << __FUNCTION__ << " error:  "
+        qDebug() << __FILE__ << __LINE__ << __FUNCTION__
                  << query.lastError();
     }
 
@@ -156,7 +170,8 @@ bool Manager::deletePerson(const QUuid &id) {
 std::shared_ptr<people::Person> Manager::person(const QUuid &id) {
     QSqlQuery query("SELECT * FROM people WHERE ID = \""+ id.toString()+"\"");
     if(!query.exec()) {
-        qDebug() << __FUNCTION__ << " error:  " << query.lastError();
+        qDebug() << __FILE__ << __LINE__ << __FUNCTION__
+                 << query.lastError();
     }
 
     auto p = std::make_shared<people::Person>(id);
@@ -172,7 +187,7 @@ std::shared_ptr<people::Person> Manager::person(const QUuid &id) {
     while (query.next()) {
         p->setLastName(query.value(lastNameIdx).toString());
         p->setFirstName(query.value(firstNameIdx).toString());
-        p->setSex(static_cast<people::Person::Sex>(query.value(sexIdx).toInt()));
+        p->setGender(static_cast<people::Person::Gender>(query.value(sexIdx).toInt()));
 
         if(!query.value(birthDateIdx).isNull()) {
             p->addEvent(people::Event(people::Event::Type::Birth, QDateTime::fromString(query.value(birthDateIdx).toString(), DATE_FORMAT)));
@@ -189,7 +204,8 @@ std::shared_ptr<people::Person> Manager::person(const QUuid &id) {
     return p;
 }
 
-Manager::ManagerPtr Manager::defaultManager() {
+Manager::ManagerPtr Manager::instance() {
+
     QDir appData = QDir(
                        QStandardPaths::writableLocation(
                            QStandardPaths::AppDataLocation));
@@ -198,7 +214,9 @@ Manager::ManagerPtr Manager::defaultManager() {
         appData.mkdir(appData.absolutePath());
     }
 
-    return std::make_shared<Manager>(appData.filePath("persons.db"));
+    static ManagerPtr  s = std::shared_ptr<Manager>(new Manager(appData.filePath("persons.db")));
+    return s;
+
 }
 
 } /* namespace db */

@@ -7,6 +7,9 @@ namespace people {
 
 class Parent: public Base {
 public:
+    static const int MIN_AGE { 15 };
+    static const int MAX_AGE { 50 };
+
     enum class Type: int {
         Mother,
         Father

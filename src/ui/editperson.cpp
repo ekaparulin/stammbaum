@@ -37,24 +37,29 @@ void EditPerson::edit(const people::Base *b) {
         m_eventWidget->addEvent(evt);
     }
 
-    ui->sex->setCurrentIndex(static_cast<int>(p->sex()));
+    setGender(p->gender());
     m_parentWidget->setPerson(p);
     show();
 }
 
+void EditPerson::setGender(people::Person::Gender g) {
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__ << (int) g;
+    ui->gender->setCurrentIndex(static_cast<int>(g));
+}
+
 void EditPerson::add(bool f) {
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
     EditDialog::add(f);
     ui->id->setText(QUuid::createUuid().toString());
     m_parentWidget->setPerson(nullptr);
+    qDebug() << __FILE__ << __LINE__ << __FUNCTION__;
 }
 
 void EditPerson::saveForm() {
-    qDebug() << __FUNCTION__ << ui->id->text();
-
     m_person = std::make_shared<people::Person>(QUuid::fromString(ui->id->text()));
     m_person->setFirstName(ui->firstName->text());
     m_person->setLastName(ui->familyName->text());
-    m_person->setSex(static_cast<people::Person::Sex>(ui->sex->currentIndex()));
+    m_person->setGender(static_cast<people::Person::Gender>(ui->gender->currentIndex()));
     m_person->setEvents(m_eventWidget->events());
 
     if(m_parentWidget->parent(people::Parent::Type::Mother).use_count())

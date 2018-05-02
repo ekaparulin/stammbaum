@@ -12,7 +12,9 @@ namespace people {
 
 class Person: public Base {
 public:
-    enum class Sex: int {
+    using EventPtr = std::shared_ptr<Event>;
+    using UuidPtr = std::shared_ptr<QUuid>;
+    enum class Gender: int {
         Unknown,
         Male,
         Female
@@ -27,21 +29,23 @@ public:
     QString lastName() const;
     void setLastName(const QString &lastName);
 
+    QString fullName() const;
+
     bool alive() const;
     void setAlive(bool alive);
 
     void addParent(Parent::Type, const QUuid&);
-    std::shared_ptr<QUuid> parent(Parent::Type) const;
+    UuidPtr parent(Parent::Type) const;
 
     const QUuid& id() const;
 
     QList<Event> events() const;
     void setEvents(const QList<Event> &events);
-    const Event& event(Event::Type) const;
+    EventPtr event(Event::Type) const;
     void addEvent(const Event&);
 
-    Sex sex() const;
-    void setSex(const Sex &sex);
+    Gender gender() const;
+    void setGender(const Gender &gender);
 
     QString toString() const;
 
@@ -49,7 +53,7 @@ private:
     QUuid       m_id;
     QString     m_firstName;
     QString     m_lastName;
-    Sex         m_sex { Sex::Unknown };
+    Gender         m_gender { Gender::Unknown };
 
     QList<Event> m_events;
     std::map<Parent::Type, std::shared_ptr<QUuid>> m_parents;

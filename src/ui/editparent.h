@@ -5,6 +5,7 @@
 #include "people/parent.h"
 #include "people/person.h"
 #include "db/dbmanager.h"
+#include "editperson.h"
 
 #include <QDialog>
 #include <QSqlQueryModel>
@@ -22,7 +23,7 @@ public:
 
     void edit(const std::shared_ptr<const people::Person>&);
 
-    people::Person::Sex parentsGender();
+    people::Person::Gender parentsGender();
 
 signals:
     void save(const QUuid&);
@@ -30,10 +31,18 @@ signals:
 private slots:
     void addPerson();
     void saveParent();
+    void savePerson(const people::Base*);
+
 private:
-    Ui::EditParent *ui;
-    people::Parent::Type m_type;
-    QSqlQueryModel  m_model;
+    void selectParent(const QUuid&);
+
+private:
+
+    Ui::EditParent              *ui;
+    people::Parent::Type        m_type;
+    QSqlQueryModel              m_model;
+    QString                     m_query;
+    std::shared_ptr<EditPerson> m_ep;
 };
 
 #endif // EDITPARENT_H

@@ -3,14 +3,9 @@
 namespace people {
 Person::Person(const QUuid& id):
     m_id(id) {
-
-    // m_parents[Parent::Type::Father] = std::shared_ptr<QUuid>(new QUuid());
-    // m_parents[Parent::Type::Mother] = std::shared_ptr<QUuid>(new QUuid());
-
 }
 
 Person::~Person() {
-    qDebug() << __FUNCTION__;
 }
 
 QString Person::firstName() const {
@@ -29,6 +24,12 @@ void Person::setLastName(const QString &lastName) {
     m_lastName = lastName;
 }
 
+QString Person::fullName() const {
+    return QString("%1 %2")
+           .arg(m_firstName)
+           .arg(m_lastName);
+}
+
 bool Person::alive() const {
     return m_alive;
 }
@@ -38,16 +39,16 @@ void Person::setAlive(bool alive) {
 }
 
 void Person::addParent(Parent::Type t, const QUuid& i) {
-    qDebug() << __FUNCTION__ << __FILE__ << __LINE__ << (int) t << i.toString();
-    m_parents[t]=std::make_shared<QUuid>(i);
+    m_parents[t] = std::make_shared<QUuid>(i);
 }
 
-std::shared_ptr<QUuid> Person::parent(Parent::Type t) const {
+Person::UuidPtr Person::parent(Parent::Type t) const {
+    UuidPtr ret;
     auto itr = m_parents.find(t);
     if(itr != m_parents.end()) {
-        return (*itr).second;
+        ret = (*itr).second;
     }
-    return std::shared_ptr<QUuid>();
+    return ret;
 }
 
 const QUuid& Person::id() const {
@@ -62,25 +63,28 @@ void Person::setEvents(const QList<Event> &events) {
     m_events = events;
 }
 
-const Event &Person::event(Event::Type t) const {
+Person::EventPtr Person::event(Event::Type t) const {
+    EventPtr ret;
     for(const Event& evt: m_events) {
-        if(evt.type() == t) {
-            return evt;
+        if(evt.type() != t) {
+            continue;
         }
+        ret = std::make_shared<Event>(evt);
+        break;
     }
-    throw std::exception();
+    return ret;
 }
 
 void Person::addEvent(const Event &e) {
     m_events.append(e);
 }
 
-Person::Sex Person::sex() const {
-    return m_sex;
+Person::Gender Person::gender() const {
+    return m_gender;
 }
 
-void Person::setSex(const Sex &sex) {
-    m_sex = sex;
+void Person::setGender(const Gender &g) {
+    m_gender = g;
 }
 
 QString Person::toString() const {
