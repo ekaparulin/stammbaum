@@ -4,5 +4,9 @@
         <file>icons/event-new.png</file>
         <file>icons/minus.png</file>
         <file>icons/plus.png</file>
+        <file>js/cytoscape.min.js</file>
+        <file>www/tree/code.js.tmpl</file>
+        <file>www/tree/index.html</file>
+        <file>www/tree/style.css</file>
     </qresource>
 </RCC>

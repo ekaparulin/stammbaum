@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "editperson.h"
+#include "treewebview.h"
 #include "db/dbmanager.h"
 
 #include <QActionGroup>
@@ -40,10 +41,7 @@ private:
     QSqlQueryModel          m_model;
     db::Manager::ManagerPtr m_dbmPtr;
     EditPerson              m_editPersonDlg;
-    QGraphicsScene *scene;
-    QGraphicsEllipseItem *ellipse;
-    QGraphicsRectItem *rectangle;
-    QGraphicsTextItem *text;
+    TreeWebView             m_treeWebView;
 };
 
 #endif // MAINWINDOW_H

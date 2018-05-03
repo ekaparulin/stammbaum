@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT       += sql
+QT       += webenginewidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -40,7 +41,8 @@ SOURCES += \
         src/ui/editevent.cpp \
     src/people/parent.cpp \
     src/ui/parentwidget.cpp \
-    src/ui/editparent.cpp
+    src/ui/editparent.cpp \
+    src/ui/treewebview.cpp
 
 HEADERS += \
         src/ui/mainwindow.h \
@@ -54,7 +56,8 @@ HEADERS += \
         src/ui/editevent.h \
     src/people/parent.h \
     src/ui/parentwidget.h \
-    src/ui/editparent.h
+    src/ui/editparent.h \
+    src/ui/treewebview.h
 
 FORMS += \
         src/ui/mainwindow.ui \

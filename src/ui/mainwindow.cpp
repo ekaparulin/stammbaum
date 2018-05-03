@@ -5,6 +5,7 @@
 #include "people/person.h"
 #include <QSqlQueryModel>
 #include <QDebug>
+#include <QWebEngineView>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -21,8 +22,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->toolBar->addAction(addPerson);
 
 
+    // Tab widget
     ui->tabWidget->setCurrentIndex(0);
 
+    // Model tab
     loadModel();
     ui->personList->setModel(&m_model);
     ui->personList->setColumnHidden(0, true);
@@ -36,6 +39,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&m_editPersonDlg, SIGNAL(save(const people::Base*)), this, SLOT(savePerson(const people::Base*)));
     connect(&m_editPersonDlg, SIGNAL(rejected()), this, SLOT(show()));
     connect(ui->personList, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(personListClicked(const QModelIndex &)));
+
+    // Tree web tab
+    ui->webTab->layout()->addWidget(&m_treeWebView);
+
+
 }
 
 MainWindow::~MainWindow() {
@@ -49,6 +57,7 @@ void MainWindow::loadModel() {
     m_model.setHeaderData(2, Qt::Horizontal, QObject::tr("First name"));
     m_model.setHeaderData(3, Qt::Horizontal, QObject::tr("Born"));
 
+    m_treeWebView.reload();
 }
 
 void MainWindow::savePerson(const people::Base* b) {

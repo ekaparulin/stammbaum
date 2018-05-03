@@ -1,7 +1,5 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
-
 ### Purpose ###
 
 * This repo holds family tree applications/drafts (from German Stammbaum --> ancestor tree)
@@ -9,47 +7,25 @@ This README would normally document whatever steps are necessary to get your app
 
 ### Setup ###
 
-* Summary of set up
+# Summary of set up
 
-qmake 
-make
+* qmake
+* make
+* run binary
 
-* Configuration
+# Configuration
 
-Saved in default QT path
+Configuration is generated in runtime and stored locally in default application folders
 
-* Dependencies
+# Dependencies
 
-QT gui, sql
-
-* Database configuration
-
-Will be created in the fly if not exists
-
-* How to run tests
-
-No tests yet
-
-* Deployment instructions
-
-Build stammbaum binary
+* QT 5.10 [https://www.qt.io]
+* Cytoscape.js - Graph theory / network library for analysis and visualisation [http://js.cytoscape.org]
 
 ### Contribution guidelines ###
 
-* Writing tests
-
-N/A
-
-* Code review
-
-Pull request
-
-* Other guidelines
+* Code style
 
 Artistic style formatting with following config:
 
     style=attach
-
-### Who do I talk to? ###
-
-* Repo owner or admin
