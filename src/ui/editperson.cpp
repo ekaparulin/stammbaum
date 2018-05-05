@@ -1,10 +1,9 @@
+#include <QDebug>
 #include "editperson.h"
 #include "ui_editperson.h"
 #include "eventwidget.h"
 #include "parentwidget.h"
-
 #include "people/person.h"
-#include <QDebug>
 
 EditPerson::EditPerson(QWidget *parent) :
     EditDialog(parent),

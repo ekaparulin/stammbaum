@@ -19,14 +19,15 @@ public:
     Manager(Manager&) = delete;
     Manager& operator=(Manager const&) = delete;
     ~Manager();
+    static ManagerPtr instance();
 
     bool addPerson(const people::Person*);
     bool updatePerson(const people::Person*);
     bool deletePerson(const QUuid&);
     std::shared_ptr<people::Person> person(const QUuid&);
 
-    static ManagerPtr instance();
-
+    QString treeNodes() const;
+    QString treeEdges() const;
 private:
     Manager(const QString&);
 private:

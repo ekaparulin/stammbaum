@@ -1,13 +1,14 @@
-#include "editdialog.h"
-#include "ui_eventeditdialog.h"
-#include "people/event.h"
-
 #include <QCalendarWidget>
 #include <QCheckBox>
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QTimeEdit>
 #include <QComboBox>
+
+#include "editdialog.h"
+#include "ui_eventeditdialog.h"
+#include "people/event.h"
+
 
 EditDialog::EditDialog(QWidget *parent) :
     QDialog(parent) {

@@ -1,11 +1,10 @@
-#include "dbmanager.h"
-
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlRecord>
 #include <QDir>
 #include <QStandardPaths>
 
+#include "dbmanager.h"
 #include "people/person.h"
 
 namespace db {
@@ -202,6 +201,76 @@ std::shared_ptr<people::Person> Manager::person(const QUuid &id) {
     }
 
     return p;
+}
+
+QString Manager::treeNodes() const {
+    QStringList ret;
+
+    QSqlQuery query("SELECT * FROM people ORDER BY BIRTH_DATE");
+    if(!query.exec()) {
+        qDebug() << __FILE__ << __LINE__ << __FUNCTION__
+                 << query.lastError();
+    }
+
+    auto idIdx = query.record().indexOf("ID");
+    auto lastNameIdx = query.record().indexOf("FAMILY_NAME");
+    auto firstNameIdx = query.record().indexOf("FIRST_NAME");
+    auto sexIdx = query.record().indexOf("SEX");
+    /*auto birthDateIdx = query.record().indexOf("BIRTH_DATE");
+    auto deathDateIdx = query.record().indexOf("DEATH_DATE");
+    auto aliveIdx = query.record().indexOf("ALIVE");
+    auto fatherIdIdx = query.record().indexOf("FATHER_ID");
+    auto motherIdIdx = query.record().indexOf("MOTHER_ID");
+    */
+    while (query.next()) {
+        // TODO: Replace with real images, once they will be stored in DB
+
+        QString image;
+        switch (static_cast<people::Person::Gender>(query.value(sexIdx).toInt())) {
+        case people::Person::Gender::Female:
+            image = "./female.png";
+        case people::Person::Gender::Male:
+            image = "./male.png";
+        case people::Person::Gender::Unknown:
+            image = "./unknown.png";
+        }
+        ret << QString("{ data: { id: '%1', content: '%2', background_image: '%3' }}")
+            .arg(query.value(idIdx).toString())
+            .arg(query.value(firstNameIdx).toString() + " " + query.value(lastNameIdx).toString())
+            .arg(image);
+
+    }
+    return ret.join(",");
+}
+
+QString Manager::treeEdges() const {
+    QStringList ret;
+
+    QSqlQuery query("SELECT ID, FATHER_ID, MOTHER_ID  FROM people");
+    if(!query.exec()) {
+        qDebug() << __FILE__ << __LINE__ << __FUNCTION__
+                 << query.lastError();
+    }
+
+    auto idIdx = query.record().indexOf("ID");
+    auto fatherIdIdx = query.record().indexOf("FATHER_ID");
+    auto motherIdIdx = query.record().indexOf("MOTHER_ID");
+
+    while (query.next()) {
+
+        if(!QUuid(query.value(fatherIdIdx).toString()).isNull()) {
+            ret << QString("{ data: { source: '%1', target: '%2' }}")
+                .arg(query.value(fatherIdIdx).toString())
+                .arg(query.value(idIdx).toString());
+        }
+        if(!QUuid(query.value(motherIdIdx).toString()).isNull()) {
+            ret << QString("{ data: { source: '%1', target: '%2' }}")
+                .arg(query.value(motherIdIdx).toString())
+                .arg(query.value(idIdx).toString());
+        }
+    }
+
+    return ret.join(",");
 }
 
 Manager::ManagerPtr Manager::instance() {

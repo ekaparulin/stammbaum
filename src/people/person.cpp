@@ -1,5 +1,7 @@
-#include "person.h"
 #include <QDebug>
+
+#include "person.h"
+
 namespace people {
 Person::Person(const QUuid& id):
     m_id(id) {

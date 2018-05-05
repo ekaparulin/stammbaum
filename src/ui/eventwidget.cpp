@@ -1,10 +1,9 @@
-#include "eventwidget.h"
-#include "ui_eventwidget.h"
-
-
 #include <QStandardItemModel>
 #include <QMenu>
 #include <QDebug>
+
+#include "eventwidget.h"
+#include "ui_eventwidget.h"
 
 #define TYPE_COL 0
 #define DATE_COL 1

@@ -1,9 +1,9 @@
+#include <QDebug>
 #include "editevent.h"
 #include "ui_editevent.h"
 #include "people/event.h"
 #include "eventwidget.h"
 
-#include <QDebug>
 
 EditEvent::EditEvent(QWidget *parent) :
     EditDialog(parent),

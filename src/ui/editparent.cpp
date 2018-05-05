@@ -1,10 +1,8 @@
+#include <QDebug>
+
 #include "editparent.h"
 #include "ui_editparent.h"
 #include "people/person.h"
-
-#include <QDebug>
-
-#include <people/person.h>
 
 EditParent::EditParent(QWidget *parent, people::Parent::Type t) :
     QDialog(parent),

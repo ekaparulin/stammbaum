@@ -4,6 +4,8 @@
 #include <QDir>
 #include <QWebEngineView>
 
+#include "db/dbmanager.h"
+
 class TreeWebView : public QWebEngineView {
 public:
     TreeWebView();
@@ -16,6 +18,7 @@ private:
     void createCodeJs();
 private:
     QDir m_appData;
+    db::Manager::ManagerPtr m_dbmPtr;
 };
 
 #endif // TREEWEBVIEW_H

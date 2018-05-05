@@ -1,9 +1,9 @@
-#include "parentwidget.h"
-#include "ui_parentwidget.h"
-
 #include <QStandardItemModel>
 #include <QMenu>
 #include <QDebug>
+
+#include "parentwidget.h"
+#include "ui_parentwidget.h"
 
 #define TYPE_COL 0
 #define NAME_COL 1

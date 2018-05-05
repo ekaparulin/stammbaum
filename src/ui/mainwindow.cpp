@@ -1,11 +1,12 @@
+#include <QSqlQueryModel>
+#include <QDebug>
+#include <QWebEngineView>
+
 #include "editperson.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "db/dbmanager.h"
 #include "people/person.h"
-#include <QSqlQueryModel>
-#include <QDebug>
-#include <QWebEngineView>
 
 
 MainWindow::MainWindow(QWidget *parent) :
